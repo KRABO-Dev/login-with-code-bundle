@@ -1,0 +1,14 @@
+<div class="widget widget-text">
+  <label for="email"><?= $this->trans('MSC.krabo_login.email') ?></label> <a class="changeEmail" onclick="KraboLoginWithCodeSubmitFunction('change_email');"><?= $this->trans('MSC.krabo_login.change') ?></a>
+  <input type="text" name="email" id="email" class="text" value="<?= $this->email ?>" disabled><br>
+</div>
+<div class="widget widget-text">
+  <label for="password"><?= $this->trans('MSC.krabo_login.password') ?></label> <a class="passwordReset" onclick="KraboLoginWithCodeSubmitFunction('password_reset');"><?= $this->trans('MSC.krabo_login.password_reset') ?></a>
+  <input type="password" name="password" id="password" class="text" required><br>
+</div>
+<div class="widget widget-submit">
+  <button type="submit" class="submit"><?= $this->submitLabel ?></button>
+</div>
+<div class="widget widget-submit">
+  <a class="requestCode" onclick="KraboLoginWithCodeSubmitFunction('passwordless_login');"><?= $this->requestCodeLabel ?></a>
+</div>

@@ -1,0 +1,58 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  krabo.login.stage.ask_for_email:
+    class: Krabo\LoginWithCodeBundle\Module\AskForEmailStage
+    public: true
+
+  krabo.login.stage.login:
+    class: Krabo\LoginWithCodeBundle\Module\LoginStage
+    public: true
+
+  krabo.login.stage.password_reset:
+    class: Krabo\LoginWithCodeBundle\Module\PasswordResetStage
+    public: true
+
+  krabo.login.stage.set_password:
+    class: Krabo\LoginWithCodeBundle\Module\SetPasswordStage
+    public: true
+
+  krabo.login.stage.passwordless_login:
+    class: Krabo\LoginWithCodeBundle\Module\PasswordlessLoginStage
+    public: true
+
+  krabo.login.stage.register:
+    class: Krabo\LoginWithCodeBundle\Module\RegisterStage
+    public: true
+
+  krabo.login.stage.activate:
+    class: Krabo\LoginWithCodeBundle\Module\ActivateStage
+    public: true
+
+  krabo.login.stage.logged_in:
+    class: Krabo\LoginWithCodeBundle\Module\LoggedInStage
+    public: true
+
+  Krabo\LoginWithCodeBundle\Service\LoginService:
+    class: Krabo\LoginWithCodeBundle\Service\LoginService
+    public: true
+    arguments:
+      - '@contao.security.frontend_user_provider'
+      - '@contao.security.user_checker'
+      - '@event_dispatcher'
+      - '@security.token_storage'
+      - '@contao.security.authentication_success_handler'
+      - '@monolog.logger.contao.access'
+
+  krabo.module.krabo_login:
+    class: Krabo\LoginWithCodeBundle\Module\LoginModule
+    public: true
+    calls:
+      - [ setContainer, [ '@service_container' ] ]
+    tags:
+      - { name: contao.frontend_module, type: krabo_login, category: user }
+    arguments:
+      - '@contao.security.token_checker'
+      - '@contao.csrf.token_manager'

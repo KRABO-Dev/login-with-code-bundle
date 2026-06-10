@@ -1,0 +1,19 @@
+{
+  "name":"krabo/login-with-code-bundle",
+  "description":"Login with a code bnudle",
+  "type": "contao-bundle",
+  "license":"LGPL-3.0-or-later",
+  "version": "1.0.0",
+  "require": {
+    "contao/core-bundle": "^4.9",
+    "terminal42/notification_center": "^1.0"
+  },
+  "extra": {
+    "contao-manager-plugin": "Krabo\\LoginWithCodeBundle\\ContaoManager\\Plugin"
+  },
+  "autoload": {
+    "psr-4": {
+      "Krabo\\LoginWithCodeBundle\\": "src/"
+    }
+  }
+}

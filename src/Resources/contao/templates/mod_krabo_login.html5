@@ -1,0 +1,34 @@
+<?php if (!$this->isAjax): ?>
+<!-- indexer::stop -->
+<div class="<?= $this->class ?> login block"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
+<?php endif; ?>
+
+<form<?php if ($this->action): ?> action="<?= $this->action ?>"<?php endif; ?> id="<?= $this->formId ?>" data-krabo_login-form="<?= $this->formId ?>" method="post" enctype="<?= $this->enctype ?>">
+  <?php if ($this->headline): ?>
+    <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
+  <?php endif; ?>
+  <?php if ($this->message): ?>
+    <?= $this->message ?>
+  <?php endif; ?>
+  <div class="formbody">
+    <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">
+    <input type="hidden" name="REQUEST_TOKEN" value="<?= $this->requestToken ?>">
+    <input type="hidden" name="stage" id="stage" value="<?= $this->stage ?>">
+    <input type="hidden" name="function" id="function" value="">
+    <input type="hidden" name="_target_path" value="<?= $this->targetPath ?>">
+    <div class="description"><?= $this->description ?></div>
+    <?= $this->stageForm; ?>
+  </div>
+  <input type="submit" id="KraboLoginAjaxSubmitButton" style="display: none;">
+</form>
+<?php if (!$this->isAjax): ?>
+</div>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+      const el = document.querySelector('[data-krabo_login-form="<?= $this->formId ?>"]');
+      KraboLoginWithCodeInitForm(el);
+  });
+</script>
+<!-- indexer::continue -->
+<?php endif; ?>
+

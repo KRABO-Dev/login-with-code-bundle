@@ -1,0 +1,3 @@
+login-with-code:
+  resource: "@LoginWithCodeBundle/Controller"
+  type:     annotation

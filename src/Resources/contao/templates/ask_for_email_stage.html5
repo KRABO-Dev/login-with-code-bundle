@@ -1,0 +1,7 @@
+<div class="widget widget-text">
+  <label for="email"><?= $this->trans('MSC.krabo_login.email') ?></label>
+  <input type="text" name="email" id="email" class="text" value="<?= $this->email ?>" required><br>
+</div>
+<div class="widget widget-submit">
+  <button type="submit" class="submit"><?= $this->submitLabel ?></button>
+</div>
