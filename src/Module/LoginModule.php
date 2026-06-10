@@ -43,6 +43,7 @@ class LoginModule extends AbstractFrontendModuleController  {
   protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
   {
     $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/loginwithcode/scripts.js|static';
+    System::loadLanguageFile('default');
     $currentStageName = 'krabo.login.stage.ask_for_email';
     if ($request->query->has('stage') && $request->query->has('token')) {
       $currentStageName = $request->query->get('stage');
