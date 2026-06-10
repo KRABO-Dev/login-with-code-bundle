@@ -1,4 +1,4 @@
-Package: krabo/typesense-search-bundle
+Package: krabo/login-with-code-bundle
 Copyright (C) 2026, Jaap Jansma <jaap.jansma@civicoop.org>
 Licensed under the GNU Affero Public License 3.0 (below).
 
