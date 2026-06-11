@@ -65,6 +65,7 @@ class LoginModule extends AbstractFrontendModuleController  {
           return $response;
         }
         $message = $currentStage->getMessage();
+        $messageStatus = $currentStage->getMessageStatus();
         $currentStageName = $currentStage->getNextStage();
         $currentStage = System::getContainer()->get($currentStageName);
       }
@@ -76,6 +77,7 @@ class LoginModule extends AbstractFrontendModuleController  {
         return $response;
       }
       $message = $currentStage->getMessage();
+      $messageStatus = $currentStage->getMessageStatus();
       $currentStageName = $currentStage->getNextStage();
       $currentStage = System::getContainer()->get($currentStageName);
       $stageForm = $currentStage->getForm($request, $model);
@@ -84,6 +86,7 @@ class LoginModule extends AbstractFrontendModuleController  {
     $template->enctype = $currentStage->hasUpload() ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
     $template->requestToken = $this->csrfTokenManager->getDefaultTokenValue();
     $template->message = $message;
+    $template->messageStatus = $messageStatus;
     $template->action = $request->getRequestUri();
     $template->formId = 'tl_krabo_login_'.$model->id;
     $template->stageForm = $stageForm;

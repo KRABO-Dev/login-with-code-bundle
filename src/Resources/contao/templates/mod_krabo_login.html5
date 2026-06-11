@@ -7,8 +7,8 @@
   <?php if ($this->headline): ?>
     <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
   <?php endif; ?>
-  <?php if ($this->message): ?>
-    <?= $this->message ?>
+  <?php if (strlen($this->message)): ?>
+    <div class="<?= $this->messageStatus ?>">"<?= $this->message ?></div>
   <?php endif; ?>
   <div class="formbody">
     <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">

@@ -60,6 +60,8 @@ class RegisterStage extends AbstractStage {
 
   private $arrUser;
 
+  private $newsletters = [];
+
   public function __construct(AuthenticationUtils $authenticationUtils, LoggerInterface $logger) {
     $this->authenticationUtils = $authenticationUtils;
     $this->logger = $logger;
@@ -120,6 +122,17 @@ class RegisterStage extends AbstractStage {
       $editable = StringUtil::deserialize($module->editable);
       foreach ($editable as $field) {
         $arrData = $GLOBALS['TL_DCA']['tl_member']['fields'][$field] ?? array();
+        if ($field == 'newsletter') {
+          $arrData['type'] = 'checkbox';
+          $arrData['options'] = [1 => $GLOBALS['TL_LANG']['tl_member']['newsletter']][0];
+          if (\is_array($arrData['options_callback'] ?? null)) {
+            $this->newsletters = array_keys(static::importStatic($arrData['options_callback'][0])->{$arrData['options_callback'][1]}($module));
+          } elseif (\is_callable($arrData['options_callback'] ?? null)) {
+            $this->newsletters = array_keys($arrData['options_callback']($module));
+          }
+          unset($arrData['options_callback']);
+          unset($arrData['foreignKey']);
+        }
 
         // Map checkboxWizards to regular checkbox widgets
         if (($arrData['inputType'] ?? null) == 'checkboxWizard') {
@@ -306,9 +319,9 @@ class RegisterStage extends AbstractStage {
     $arrData['disable'] = 1;
 
     // Make sure newsletter is an array
-    if (isset($arrData['newsletter']) && !\is_array($arrData['newsletter']))
+    if (isset($arrData['newsletter']) && !empty($arrData['newsletter']))
     {
-      $arrData['newsletter'] = array($arrData['newsletter']);
+      $arrData['newsletter'] = $this->newsletters;
     }
 
     // Create the user

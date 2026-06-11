@@ -108,6 +108,7 @@ class ActivateStage extends AbstractStage {
 
     $this->nextStage = 'krabo.login.stage.logged_in';
     $this->response = $response;
+    $this->messageStatus = 'success';
     $this->message = $this->translate('MSC.krabo_login.activate_success');
     return '';
   }

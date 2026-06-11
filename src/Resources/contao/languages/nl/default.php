@@ -40,6 +40,7 @@ $GLOBALS['TL_LANG']['MSC']['krabo_login']['set_password_passwords_do_not_match']
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_headline'] = 'Nieuw account aanmaken';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_description'] = 'We zien dat je nog geen lid bent van de club. Dit kan geregeld worden.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_passwords_do_not_match'] = 'Wachtwoorden komen niet overeen.';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['register_newsletter'] = 'Ik wil de nieuwsbrief ontvangen';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_submit'] = 'Account aanmaken';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['registration_error'] = 'Het is niet gelukt om een account voor je aan te maken.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['registration_success'] = 'Er is een account voor je aangemaakt. Controleer je e-mail om je account te activeren.';

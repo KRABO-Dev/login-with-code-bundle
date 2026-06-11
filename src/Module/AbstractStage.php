@@ -33,6 +33,8 @@ abstract class AbstractStage extends System{
 
   protected string $message = '';
 
+  protected string $messageStatus = 'error';
+
   protected ?Response $response = null;
 
   protected bool $hasUpload = false;
@@ -58,6 +60,10 @@ abstract class AbstractStage extends System{
   public function getMessage(): string
   {
     return $this->message;
+  }
+
+  public function getMessageStatus(): string {
+    return $this->messageStatus;
   }
 
   public function hasUpload(): bool {

@@ -42,6 +42,7 @@ $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_description'] = 'You are not
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_passwords_do_not_match'] = 'Passwords do not match.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_submit'] = 'Register';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['registration_error'] = 'Could not register your as a member.';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['register_newsletter'] = 'I want to receive the newsletter';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['registration_success'] = 'Successfully created an account. Check your e-mail to activate your account.';
 
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['activate_headline'] = 'Activate your account';
