@@ -24,6 +24,9 @@ $GLOBALS['TL_LANG']['MSC']['krabo_login']['email_not_found'] = 'E-mail address n
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['logged_in_headline'] = 'Logged in';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['logged_in_description'] = 'Logged in as %s';
 
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['registered_headline'] = 'Registered.';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['registered_description'] = 'We have sent you an e-mail to activate your account.';
+
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['password_reset_headline'] = 'Password reset';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['password_reset_description'] = 'We have sent you an email to reset your password.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['password_reset_back'] = 'Back to login';

@@ -3,7 +3,7 @@
 <div class="<?= $this->class ?> login block"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
 <?php endif; ?>
 
-<form<?php if ($this->action): ?> action="<?= $this->action ?>"<?php endif; ?> id="<?= $this->formId ?>" data-krabo_login-form="<?= $this->formId ?>" method="post" enctype="<?= $this->enctype ?>">
+<form<?php if ($this->action): ?> action="<?= $this->action ?>"<?php endif; ?> id="<?= $this->formId ?>" data-krabo_login-form="<?= $this->formId ?>" method="post" enctype="<?= $this->enctype ?>" class="<?= str_replace($this->stage, ".", "_") ?>">
   <?php if ($this->headline): ?>
     <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
   <?php endif; ?>
@@ -15,7 +15,6 @@
     <input type="hidden" name="REQUEST_TOKEN" value="<?= $this->requestToken ?>">
     <input type="hidden" name="stage" id="stage" value="<?= $this->stage ?>">
     <input type="hidden" name="function" id="function" value="">
-    <input type="hidden" name="_target_path" value="<?= $this->targetPath ?>">
     <div class="description"><?= $this->description ?></div>
     <?= $this->stageForm; ?>
   </div>

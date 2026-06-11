@@ -24,6 +24,9 @@ $GLOBALS['TL_LANG']['MSC']['krabo_login']['email_not_found'] = 'E-mail address n
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['logged_in_headline'] = 'Ingelogd';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['logged_in_description'] = 'Ingelogd als %s';
 
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['registered_headline'] = 'Account aangemaakt.';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['registered_description'] = 'Er is een e-mail verstuurd om je account te activeren.';
+
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['password_reset_headline'] = 'Wachtwoord vergeten';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['password_reset_description'] = 'We hebben je een e-mail gestuurd om je wachtwoord opnieuw in te stellen.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['password_reset_back'] = 'Terug naar inloggen';

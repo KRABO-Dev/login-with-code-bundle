@@ -52,8 +52,6 @@ class LoginModule extends AbstractFrontendModuleController  {
       $currentStageName = 'krabo.login.stage.logged_in';
     }
     $currentStage = System::getContainer()->get($currentStageName);
-    $target = $model->getRelated('jumpTo');
-    $targetPath = $target instanceof PageModel ? $target->getFrontendUrl() : $request->getRequestUri();
 
     $isAjax = false;
     if ($this->isAjaxForm($request, $model->id)) {
@@ -63,11 +61,7 @@ class LoginModule extends AbstractFrontendModuleController  {
         $currentStageName = $submittedStage;
         $currentStage = System::getContainer()->get($currentStageName);
         $currentStage->process($request, $model);
-        if ($response = $currentStage->getResponse()) {
-          if ($response instanceof RedirectResponse) {
-            $location = $response->getTargetUrl();
-            return new Response($location, 302, ['X-Ajax-Location' => $location]);
-          }
+        if ($response = $this->processResponse($currentStage, $isAjax)) {
           return $response;
         }
         $message = $currentStage->getMessage();
@@ -78,6 +72,9 @@ class LoginModule extends AbstractFrontendModuleController  {
     $stageForm = $currentStage->getForm($request, $model);
 
     if ($currentStage->shouldGoToNext()) {
+      if ($response = $this->processResponse($currentStage, $isAjax)) {
+        return $response;
+      }
       $message = $currentStage->getMessage();
       $currentStageName = $currentStage->getNextStage();
       $currentStage = System::getContainer()->get($currentStageName);
@@ -85,7 +82,6 @@ class LoginModule extends AbstractFrontendModuleController  {
     }
 
     $template->enctype = $currentStage->hasUpload() ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
-    $template->targetPath = base64_encode($targetPath);
     $template->requestToken = $this->csrfTokenManager->getDefaultTokenValue();
     $template->message = $message;
     $template->action = $request->getRequestUri();
@@ -101,6 +97,18 @@ class LoginModule extends AbstractFrontendModuleController  {
     }
     return new Response($template->parse());
   }
+
+  private function processResponse(AbstractStage $stage, bool $isAjax):? Response {
+    if ($response = $stage->getResponse()) {
+      if ($isAjax && $response instanceof RedirectResponse) {
+        $location = $response->getTargetUrl();
+        return new Response($location, $response->getStatusCode(), ['X-Ajax-Location' => $location]);
+      }
+      return $response;
+    }
+    return null;
+  }
+
   private function isAjaxForm(Request $request, $id): bool
   {
     if ($request->isXmlHttpRequest() && $request->headers->get('X-Contao-Ajax-Form') === 'tl_krabo_login_'.$id) {

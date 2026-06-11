@@ -63,6 +63,8 @@ const KraboLoginWithCodeInitCodeInputs = (form) => {
                     inputField.lastElementChild.value = "";
                     inputCount -= 1;
                     submitButton.classList.add("hide");
+                } else {
+                    submitButton.click();
                 }
             }
         });

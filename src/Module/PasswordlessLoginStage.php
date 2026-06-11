@@ -21,6 +21,7 @@ namespace Krabo\LoginWithCodeBundle\Module;
 use Contao\FrontendTemplate;
 use Contao\MemberModel;
 use Contao\ModuleModel;
+use Contao\PageModel;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Krabo\LoginWithCodeBundle\Service\LoginService;
@@ -60,13 +61,14 @@ class PasswordlessLoginStage extends AbstractStage {
   }
 
   public function process(Request $request, ModuleModel $module) {
+    $this->nextStage = 'krabo.login.stage.passwordless_login';
     $function = $request->request->get('function');
     if ($function === 'change_email') {
       $this->nextStage = 'krabo.login.stage.ask_for_email';
       return;
     }
     if ($function === 'resend') {
-      $this->nextStage = 'krabo.login.stage.passwordless_login';
+      return;
     }
     $username = $this->authenticationUtils->getLastUsername();
     $member = MemberModel::findByUsername($username);
@@ -97,17 +99,22 @@ class PasswordlessLoginStage extends AbstractStage {
       $this->message = $this->translate('MSC.krabo_login.invalid_token');
       return;
     }
+
+    $target = $module->getRelated('jumpTo');
+    $targetPath = $target instanceof PageModel ? $target->getAbsoluteUrl() : $request->getRequestUri();
+    $request->request->set('_target_path', base64_encode($targetPath));
+    $request->request->set('_always_use_target_path', true);
+
+    $response = $this->loginService->authenticatePasswordless($request, $username);
+    if ($response === NULL) {
+      $this->message = $this->translate('MSC.krabo_login.invalid_token');
+      return;
+    }
     $this->connection->createQueryBuilder()
       ->delete('tl_member_login_token')
       ->where('id=:id')
       ->setParameter('id', $result['id'])
       ->executeStatement();
-
-    $response = $this->loginService->authenticate($request, $username);
-    if ($response === NULL) {
-      $this->message = $this->translate('MSC.krabo_login.invalid_token');
-      return;
-    }
     $this->nextStage = 'krabo.login.stage.logged_in';
     $this->response = $response;
   }

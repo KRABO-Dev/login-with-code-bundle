@@ -282,8 +282,7 @@ class RegisterStage extends AbstractStage {
       $arrData['password'] = $this->objWidget->value;
       $this->createNewUser($arrData, $module);
 
-      $this->message = $this->translate('MSC.krabo_login.registration_success');
-      $this->nextStage = 'krabo.login.stage.login';
+      $this->nextStage = 'krabo.login.stage.registered';
     } else {
       $this->nextStage = 'krabo.login.stage.register';
       $this->message = $this->translate('MSC.krabo_login.registration_error');

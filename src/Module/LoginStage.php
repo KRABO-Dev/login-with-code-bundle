@@ -21,6 +21,7 @@ namespace Krabo\LoginWithCodeBundle\Module;
 use Contao\FrontendTemplate;
 use Contao\MemberModel;
 use Contao\ModuleModel;
+use Contao\PageModel;
 use Contao\StringUtil;
 use Krabo\LoginWithCodeBundle\Service\LoginService;
 use Symfony\Component\HttpFoundation\Request;
@@ -73,8 +74,15 @@ class LoginStage extends AbstractStage {
       $this->nextStage = 'krabo.login.stage.ask_for_email';
       return;
     }
+
+    $target = $module->getRelated('jumpTo');
+    $targetPath = $target instanceof PageModel ? $target->getAbsoluteUrl() : $request->getRequestUri();
+    $request->request->set('_target_path', base64_encode($targetPath));
+    $request->request->set('_always_use_target_path', true);
+
     $response = $this->loginService->authenticate($request, $username, $request->request->get('password'));
     if ($response === NULL) {
+      $this->nextStage = 'krabo.login.stage.login';
       $this->message = $this->translate('MSC.krabo_login.invalid_password');
       return;
     }

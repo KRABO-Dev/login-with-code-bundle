@@ -21,17 +21,18 @@ namespace Krabo\LoginWithCodeBundle\Module;
 use Contao\MemberModel;
 use Contao\ModuleModel;
 use Contao\OptInModel;
+use Contao\PageModel;
 use Contao\System;
 use Contao\Versions;
-use Psr\Log\LoggerInterface;
+use Krabo\LoginWithCodeBundle\Service\LoginService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 
 class ActivateStage extends AbstractStage {
-  private LoggerInterface $logger;
+  private LoginService $loginService;
 
-  public function __construct(LoggerInterface $logger) {
-    $this->logger = $logger;
+  public function __construct(LoginService $loginService) {
+    $this->loginService = $loginService;
   }
 
   public function getHeadline(): string {
@@ -52,10 +53,12 @@ class ActivateStage extends AbstractStage {
 
     $optIn = System::getContainer()->get('contao.opt_in');
     if ((!$optInToken = $optIn->find($token)) || !$optInToken->isValid() || \count($arrRelated = $optInToken->getRelatedRecords()) != 1 || key($arrRelated) != 'tl_member' || \count($arrIds = current($arrRelated)) != 1 || (!$member = MemberModel::findByPk($arrIds[0]))) {
+      $this->nextStage = 'krabo.login.stage.activate';
       $this->message = $this->translate('MSC.krabo_login.activate_error');
       return '';
     }
     if ($optInToken->isConfirmed() || $optInToken->getEmail() != $member->email) {
+      $this->nextStage = 'krabo.login.stage.activate';
       $this->message = $this->translate('MSC.krabo_login.activate_error');
       return '';
     }
@@ -91,19 +94,21 @@ class ActivateStage extends AbstractStage {
       $objVersions->create();
     }
 
-    // HOOK: set new password callback
-    if (isset($GLOBALS['TL_HOOKS']['setNewPassword']) && \is_array($GLOBALS['TL_HOOKS']['setNewPassword']))
-    {
-      foreach ($GLOBALS['TL_HOOKS']['setNewPassword'] as $callback)
-      {
-        $this->import($callback[0]);
-        $this->{$callback[0]}->{$callback[1]}($member, $this->objWidget->value, $this);
-      }
+    $target = $module->getRelated('reg_jumpTo');
+    $targetPath = $target instanceof PageModel ? $target->getAbsoluteUrl() : $request->getRequestUri();
+    $request->request->set('_target_path', base64_encode($targetPath));
+    $request->request->set('_always_use_target_path', true);
+
+    $response = $this->loginService->authenticatePasswordless($request, $member->username);
+    if ($response === NULL) {
+      $this->nextStage = 'krabo.login.stage.activate';
+      $this->message = $this->translate('MSC.krabo_login.activate_error');
+      return '';
     }
 
+    $this->nextStage = 'krabo.login.stage.logged_in';
+    $this->response = $response;
     $this->message = $this->translate('MSC.krabo_login.activate_success');
-
-    $this->nextStage = 'krabo.login.stage.login';
     return '';
   }
 

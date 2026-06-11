@@ -27,6 +27,10 @@ services:
     class: Krabo\LoginWithCodeBundle\Module\RegisterStage
     public: true
 
+  krabo.login.stage.registered:
+    class: Krabo\LoginWithCodeBundle\Module\RegisteredStage
+    public: true
+
   krabo.login.stage.activate:
     class: Krabo\LoginWithCodeBundle\Module\ActivateStage
     public: true
@@ -45,6 +49,7 @@ services:
       - '@security.token_storage'
       - '@contao.security.authentication_success_handler'
       - '@monolog.logger.contao.access'
+      - '@security.authentication.manager'
 
   krabo.module.krabo_login:
     class: Krabo\LoginWithCodeBundle\Module\LoginModule
