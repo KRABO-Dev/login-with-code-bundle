@@ -163,6 +163,7 @@ class SetPasswordStage extends AbstractStage {
       }
 
       $request->getSession()->set(Security::LAST_USERNAME, $member->username);
+      $this->messageStatus = 'success';
       $this->message = $this->translate('MSC.krabo_login.set_password_success');
       $this->nextStage = 'krabo.login.stage.login';
     } else {
