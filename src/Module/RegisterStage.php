@@ -124,7 +124,7 @@ class RegisterStage extends AbstractStage {
         $arrData = $GLOBALS['TL_DCA']['tl_member']['fields'][$field] ?? array();
         if ($field == 'newsletter') {
           $arrData['type'] = 'checkbox';
-          $arrData['options'] = [1 => $GLOBALS['TL_LANG']['tl_member']['newsletter']][0];
+          $arrData['options'] = [1 => $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_newsletter']];
           if (\is_array($arrData['options_callback'] ?? null)) {
             $this->newsletters = array_keys(static::importStatic($arrData['options_callback'][0])->{$arrData['options_callback'][1]}($module));
           } elseif (\is_callable($arrData['options_callback'] ?? null)) {
