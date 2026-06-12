@@ -68,6 +68,8 @@ class PasswordlessLoginStage extends AbstractStage {
       return;
     }
     if ($function === 'resend') {
+      $this->messageStatus = 'success';
+      $this->message = $this->translate('MSC.krabo_login.code_resend');
       return;
     }
     $username = $this->authenticationUtils->getLastUsername();
