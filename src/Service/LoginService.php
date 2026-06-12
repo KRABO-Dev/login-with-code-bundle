@@ -65,7 +65,7 @@ class LoginService {
       $user = $this->userProvider->loadUserByIdentifier($username);
       if ($user instanceof FrontendUser) {
         $previousToken = $this->tokenStorage->getToken();
-        $usernamePasswordToken = new UsernamePasswordToken($user, $password, 'contao_frontend', $user->getRoles());
+        $usernamePasswordToken = new UsernamePasswordToken($username, $password, 'contao_frontend');
         $returnValue = $this->authenticationManager->authenticate($usernamePasswordToken);
         if ($returnValue instanceof TokenInterface) {
           $this->migrateSession($request, $returnValue, $previousToken);
