@@ -27,6 +27,7 @@ use Doctrine\DBAL\Connection;
 use Krabo\LoginWithCodeBundle\Service\LoginService;
 use NotificationCenter\Model\Notification;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class PasswordlessLoginStage extends AbstractStage {
@@ -34,6 +35,7 @@ class PasswordlessLoginStage extends AbstractStage {
   private AuthenticationUtils $authenticationUtils;
   private LoginService $loginService;
   private Connection $connection;
+  private $expires = 5;
 
   public function __construct(AuthenticationUtils $authenticationUtils, LoginService $loginService, Connection $connection) {
     $this->authenticationUtils = $authenticationUtils;
@@ -41,12 +43,22 @@ class PasswordlessLoginStage extends AbstractStage {
     $this->connection = $connection;
   }
 
+  public function getBreadCrumbTitle(): string {
+    return $this->translate('MSC.krabo_login.login_request_code_breadcrumb');
+  }
+
   public function getHeadline(): string {
     return $this->translate('MSC.krabo_login.login_request_code_headline');
   }
 
   public function getDescription(): string {
-    return $this->translate('MSC.krabo_login.login_request_code_description');
+    return sprintf($this->translate('MSC.krabo_login.login_request_code_description'), $this->expires);
+  }
+
+  public function getBreadCrumb(): array {
+    return [
+      'krabo.login.stage.ask_for_email',
+    ];
   }
 
   public function getForm(Request $request, ModuleModel $module): string {
@@ -64,6 +76,7 @@ class PasswordlessLoginStage extends AbstractStage {
     $this->nextStage = 'krabo.login.stage.passwordless_login';
     $function = $request->request->get('function');
     if ($function === 'change_email') {
+      $request->getSession()->set(Security::LAST_USERNAME, NULL);
       $this->nextStage = 'krabo.login.stage.ask_for_email';
       return;
     }
@@ -135,7 +148,7 @@ class PasswordlessLoginStage extends AbstractStage {
         'jumpTo' => '?',
       ])
       ->setParameter(0, time())
-      ->setParameter(1, strtotime('+2 hours'))
+      ->setParameter(1, strtotime('+' . $this->expires . ' minutes'))
       ->setParameter(2, $member->id)
       ->setParameter(3, $token)
       ->setParameter(4, '/' . ltrim($request->request->get('_target_path'), '/'))

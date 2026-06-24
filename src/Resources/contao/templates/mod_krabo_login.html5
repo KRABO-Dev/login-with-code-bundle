@@ -4,6 +4,11 @@
 <?php endif; ?>
 
 <form<?php if ($this->action): ?> action="<?= $this->action ?>"<?php endif; ?> id="<?= $this->formId ?>" data-krabo_login-form="<?= $this->formId ?>" method="post" enctype="<?= $this->enctype ?>" class="<?= str_replace($this->stage, ".", "_") ?>">
+  <ul class="breadcrumbs">
+    <?php foreach($this->breadcrumbs as $breadcrumb): ?>
+      <li class="<?= $breadcrumb['class']; ?>" <?php if (!$breadcrumb['is_current']): ?> onclick="KraboLoginWithCodeSubmitFunction('<?= $breadcrumb['function']; ?>')" <?php endif; ?>><?= $breadcrumb['title']; ?></li>
+    <?php endforeach; ?>
+  </ul>
   <?php if ($this->headline): ?>
     <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
   <?php endif; ?>

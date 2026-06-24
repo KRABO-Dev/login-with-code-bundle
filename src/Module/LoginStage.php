@@ -23,18 +23,28 @@ use Contao\MemberModel;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
+use Contao\System;
 use Krabo\LoginWithCodeBundle\Service\LoginService;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Contao\CoreBundle\Monolog\ContaoContext;
+use Psr\Log\LoggerInterface;
 
 class LoginStage extends AbstractStage {
 
   private AuthenticationUtils $authenticationUtils;
   private LoginService $loginService;
+  private LoggerInterface $logger;
 
-  public function __construct(AuthenticationUtils $authenticationUtils, LoginService $loginService) {
+  public function __construct(AuthenticationUtils $authenticationUtils, LoginService $loginService, LoggerInterface $logger) {
     $this->authenticationUtils = $authenticationUtils;
     $this->loginService = $loginService;
+    $this->logger = $logger;
+  }
+
+  public function getBreadCrumbTitle(): string {
+    return $this->translate('MSC.krabo_login.login_breadcrumb');
   }
 
   public function getHeadline(): string {
@@ -43,6 +53,12 @@ class LoginStage extends AbstractStage {
 
   public function getDescription(): string {
     return $this->translate('MSC.krabo_login.login_description');
+  }
+
+  public function getBreadCrumb(): array {
+    return [
+      'krabo.login.stage.ask_for_email',
+    ];
   }
 
   public function getForm(Request $request, ModuleModel $module): string {
@@ -56,6 +72,7 @@ class LoginStage extends AbstractStage {
   public function process(Request $request, ModuleModel $module) {
     $function = $request->request->get('function');
     if ($function === 'change_email') {
+      $request->getSession()->set(Security::LAST_USERNAME, NULL);
       $this->nextStage = 'krabo.login.stage.ask_for_email';
       return;
     }
@@ -63,15 +80,19 @@ class LoginStage extends AbstractStage {
       $this->nextStage = 'krabo.login.stage.passwordless_login';
       return;
     }
-    if ($function == 'password_reset') {
-      $this->nextStage = 'krabo.login.stage.password_reset';
-      return;
-    }
     $username = $this->authenticationUtils->getLastUsername();
     $member = MemberModel::findByUsername($username);
     if (null === $member) {
+      $request->getSession()->set(Security::LAST_USERNAME, NULL);
       $this->message = $this->translate('MSC.krabo_login.email_not_found');
       $this->nextStage = 'krabo.login.stage.ask_for_email';
+      return;
+    }
+    if ($function == 'password_reset') {
+      $this->sendPasswordLink($member, $module->nc_password_reset_notification);
+      $this->message = $this->translate('MSC.krabo_login.password_reset_description');
+      $this->messageStatus = 'success';
+      $this->nextStage = 'krabo.login.stage.login';
       return;
     }
 
@@ -88,6 +109,37 @@ class LoginStage extends AbstractStage {
     }
     $this->nextStage = 'krabo.login.stage.logged_in';
     $this->response = $response;
+  }
+
+  protected function sendPasswordLink($objMember, $notficationId)
+  {
+    $objNotification = \NotificationCenter\Model\Notification::findByPk($notficationId);
+
+    if ($objNotification === null) {
+      $this->log('The notification was not found ID ' . $notficationId, __METHOD__, TL_ERROR);
+      return;
+    }
+
+    /** @var \Contao\CoreBundle\OptIn\OptIn $optIn */
+    $optIn = System::getContainer()->get('contao.opt-in');
+    $optInToken = $optIn->create('pw', $objMember->email, array('tl_member'=>array($objMember->id)));
+    $token = $optInToken->getIdentifier();
+
+    $arrTokens = array();
+
+    // Add member tokens
+    foreach ($objMember->row() as $k => $v)
+    {
+      $arrTokens['member_' . $k] = $v;
+    }
+
+    $arrTokens['recipient_email'] = $objMember->email;
+    $arrTokens['domain'] = \Idna::decode(\Environment::get('host'));
+    $arrTokens['link'] = \Idna::decode(\Environment::get('base')) . \Environment::get('request') . ((($GLOBALS['TL_CONFIG']['disableAlias'] ?? false) || strpos(\Environment::get('request'), '?') !== false) ? '&' : '?') . 'token=' . $token;
+    $arrTokens['link'] .= '&stage=krabo.login.stage.set_password';
+
+    $objNotification->send($arrTokens, $GLOBALS['TL_LANGUAGE']);
+    $this->logger->info('A new password has been requested for user ID ' . $objMember->id . ' (' . $objMember->email . ')', array('contao' => new ContaoContext(__FUNCTION__, TL_ACCESS)));
   }
 
 }

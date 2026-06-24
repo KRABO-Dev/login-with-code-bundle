@@ -41,6 +41,7 @@ use Contao\Versions;
 use Contao\Widget;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class RegisterStage extends AbstractStage {
@@ -67,6 +68,10 @@ class RegisterStage extends AbstractStage {
     $this->logger = $logger;
   }
 
+  public function getBreadCrumbTitle(): string {
+    return $this->translate('MSC.krabo_login.register_breadcrumb');
+  }
+
   public function getHeadline(): string {
     return $this->translate('MSC.krabo_login.register_headline');
   }
@@ -75,16 +80,22 @@ class RegisterStage extends AbstractStage {
     return $this->translate('MSC.krabo_login.register_description');
   }
 
+  public function getBreadCrumb(): array {
+    return [
+      'krabo.login.stage.ask_for_email',
+    ];
+  }
+
   public function getForm(Request $request, ModuleModel $module): string {
-    $this->initializeWidgets($module);
+    $this->initializeWidgets($module, false);
     $template = new FrontendTemplate('register_stage');
     $template->email = StringUtil::specialchars($this->authenticationUtils->getLastUsername());
     $template->submitLabel = $this->translate('MSC.krabo_login.register_submit');
-    $template->fields = $this->objWidget->parse() . $this->objWidgetConfirm->parse() . $this->fields;
+    $template->fields = $this->objWidget->generateLabel() . $this->objWidget->generate() . $this->objWidgetConfirm->generateLabel() . $this->objWidgetConfirm->generate() . $this->fields;
     return $template->parse();
   }
 
-  public function initializeWidgets(ModuleModel $module): void {
+  public function initializeWidgets(ModuleModel $module, $validateSubmit = true): void {
     System::loadLanguageFile('tl_member');
     $loader = new DcaLoader('tl_member');
     $loader->load();
@@ -120,8 +131,18 @@ class RegisterStage extends AbstractStage {
 
       // Build the form
       $editable = StringUtil::deserialize($module->editable);
+      $editable[] = 'privacy';
       foreach ($editable as $field) {
-        $arrData = $GLOBALS['TL_DCA']['tl_member']['fields'][$field] ?? array();
+        if ($field == 'privacy') {
+          $arrData = [
+            'label'                   => ['', ''],
+            'inputType'                    => 'checkbox',
+            'options'                 => [1 => $GLOBALS['TL_LANG']['MSC']['krabo_login']['privacy'] . '&nbsp;<span class="mandatory">*</span>'],
+            'eval'                    => array('mandatory'=>true, 'tl_class'=>'w50 wizard', 'feEditable'=>true, 'feGroup'=>'personal'),
+          ];
+        } else {
+          $arrData = $GLOBALS['TL_DCA']['tl_member']['fields'][$field] ?? array();
+        }
         if ($field == 'newsletter') {
           $arrData['type'] = 'checkbox';
           $arrData['options'] = [1 => $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_newsletter']];
@@ -171,7 +192,7 @@ class RegisterStage extends AbstractStage {
         }
 
         // Validate input
-        if (Input::post('FORM_SUBMIT') == $strFormId) {
+        if (Input::post('FORM_SUBMIT') == $strFormId && $validateSubmit) {
           $objWidget->validate();
 
           $varValue = $objWidget->value;
@@ -268,6 +289,7 @@ class RegisterStage extends AbstractStage {
     $username = $this->authenticationUtils->getLastUsername();
     $function = $request->request->get('function');
     if ($function === 'change_email') {
+      $request->getSession()->set(Security::LAST_USERNAME, NULL);
       $this->nextStage = 'krabo.login.stage.ask_for_email';
       return;
     }
@@ -298,7 +320,7 @@ class RegisterStage extends AbstractStage {
       $this->nextStage = 'krabo.login.stage.registered';
     } else {
       $this->nextStage = 'krabo.login.stage.register';
-      $this->message = $this->translate('MSC.krabo_login.registration_error');
+      $this->message = $this->objWidget->getErrorAsString();
     }
 
   }

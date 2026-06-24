@@ -60,13 +60,22 @@ class LoginModule extends AbstractFrontendModuleController  {
       if ($submittedStage) {
         $currentStageName = $submittedStage;
         $currentStage = System::getContainer()->get($currentStageName);
-        $currentStage->process($request, $model);
-        if ($response = $this->processResponse($currentStage, $isAjax)) {
-          return $response;
+        $function = $request->request->get('function');
+        if (str_starts_with($function, 'breadcrumb_')) {
+          $breadcrumbIndex = substr($function, 11) -1;
+          $breadcrumbs = $currentStage->getBreadCrumb();
+          if (isset($breadcrumbs[$breadcrumbIndex])) {
+            $currentStageName = $breadcrumbs[$breadcrumbIndex];
+          }
+        } else {
+          $currentStage->process($request, $model);
+          if ($response = $this->processResponse($currentStage, $isAjax)) {
+            return $response;
+          }
+          $message = $currentStage->getMessage();
+          $messageStatus = $currentStage->getMessageStatus();
+          $currentStageName = $currentStage->getNextStage();
         }
-        $message = $currentStage->getMessage();
-        $messageStatus = $currentStage->getMessageStatus();
-        $currentStageName = $currentStage->getNextStage();
         $currentStage = System::getContainer()->get($currentStageName);
       }
     }
@@ -83,6 +92,27 @@ class LoginModule extends AbstractFrontendModuleController  {
       $stageForm = $currentStage->getForm($request, $model);
     }
 
+    $breadcrumbs = [];
+    $breadcrumbCount = 1;
+    foreach($currentStage->getBreadCrumb() as $breadcrumb) {
+      $breadcrumbStage = System::getContainer()->get($breadcrumb);
+      $breadcrumbs[] = [
+        'is_current' => false,
+        'step' => $breadcrumb,
+        'function' => 'breadcrumb_' . $breadcrumbCount,
+        'title' => $breadcrumbStage->getBreadCrumbTitle(),
+        'class' => '',
+      ];
+      $breadcrumbCount ++;
+    }
+    $breadcrumbs[] = [
+      'is_current' => true,
+      'step' => $currentStageName,
+      'function' => 'breadcrumb_' . $breadcrumbCount,
+      'title' => $currentStage->getBreadCrumbTitle(),
+      'class' => 'current',
+    ];
+
     $template->enctype = $currentStage->hasUpload() ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
     $template->requestToken = $this->csrfTokenManager->getDefaultTokenValue();
     $template->message = $message;
@@ -94,6 +124,7 @@ class LoginModule extends AbstractFrontendModuleController  {
     $template->headline = $currentStage->getHeadline();
     $template->description = $currentStage->getDescription();
     $template->stage = $currentStageName;
+    $template->breadcrumbs = $breadcrumbs;
     if ($isAjax) {
       echo $template->parse();
       exit();

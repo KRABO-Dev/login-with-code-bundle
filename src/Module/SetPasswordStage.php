@@ -25,19 +25,28 @@ use Contao\OptInModel;
 use Contao\System;
 use Contao\Versions;
 use Contao\Widget;
+use DcaLoader;
+use Krabo\LoginWithCodeBundle\Service\LoginService;
+use PageModel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 
 class SetPasswordStage extends AbstractStage {
   private LoggerInterface $logger;
+  private LoginService $loginService;
 
   private $objWidget;
 
   private $objWidgetConfirm;
 
-  public function __construct(LoggerInterface $logger) {
+  public function __construct(LoggerInterface $logger, LoginService $loginService) {
     $this->logger = $logger;
+    $this->loginService = $loginService;
+  }
+
+  public function getBreadCrumbTitle(): string {
+    return $this->translate('MSC.krabo_login.set_password_breadcrumb');
   }
 
   public function getHeadline(): string {
@@ -46,6 +55,12 @@ class SetPasswordStage extends AbstractStage {
 
   public function getDescription(): string {
     return $this->translate('MSC.krabo_login.set_password_description');
+  }
+
+  public function getBreadCrumb(): array {
+    return [
+      'krabo.login.stage.ask_for_email',
+    ];
   }
 
   public function getForm(Request $request, ModuleModel $module): string {
@@ -66,12 +81,15 @@ class SetPasswordStage extends AbstractStage {
     $template->submitLabel = $this->translate('MSC.krabo_login.set_password_submit');
 
     $template->token = $token;
-    $template->fields = $this->objWidget->parse() . $this->objWidgetConfirm->parse();
+    $template->fields = $this->objWidget->generateLabel() . $this->objWidget->generate() . $this->objWidgetConfirm->generateLabel() . $this->objWidgetConfirm->generate();
 
     return $template->parse();
   }
 
   public function initializeWidgets(Request $request, $member): void {
+    System::loadLanguageFile('tl_member');
+    $loader = new DcaLoader('tl_member');
+    $loader->load();
     // Define the form field
     $arrField = $GLOBALS['TL_DCA']['tl_member']['fields']['password'];
     $strClass = $GLOBALS['TL_FFL']['password'] ?? null;
@@ -105,15 +123,18 @@ class SetPasswordStage extends AbstractStage {
     $optIn = System::getContainer()->get('contao.opt_in');
     // Find an unconfirmed token with only one related record
     if ((!$optInToken = $optIn->find($request->request->get('token'))) || !$optInToken->isValid() || \count($arrRelated = $optInToken->getRelatedRecords()) != 1 || key($arrRelated) != 'tl_member' || \count($arrIds = current($arrRelated)) != 1 || (!$member = MemberModel::findByPk($arrIds[0]))) {
+      $this->message = $this->translate('MSC.krabo_login.set_password_error');  
       $this->nextStage = 'krabo.login.stage.ask_for_email';
       return;
     }
 
     if ($optInToken->isConfirmed()) {
+      $this->message = $this->translate('MSC.krabo_login.set_password_error');
       $this->nextStage = 'krabo.login.stage.ask_for_email';
       return;
     }
     if ($optInToken->getEmail() != $member->email) {
+      $this->message = $this->translate('MSC.krabo_login.set_password_error');
       $this->nextStage = 'krabo.login.stage.ask_for_email';
       return;
     }
@@ -162,13 +183,23 @@ class SetPasswordStage extends AbstractStage {
         }
       }
 
-      $request->getSession()->set(Security::LAST_USERNAME, $member->username);
+      $targetPath = $request->getBasePath() . $request->getPathInfo() . '?stage=krabo.login.stage.logged_in';
+      $request->request->set('_target_path', base64_encode($targetPath));
+      $response = $this->loginService->authenticatePasswordless($request, $member->username);
+      if ($response === NULL) {
+        $this->nextStage = 'krabo.login.stage.ask_for_email';
+        $this->message = $this->translate('MSC.krabo_login.set_password_error');
+        $this->messageStatus = 'error';
+        return;
+      }
+      $this->response = $response;
       $this->messageStatus = 'success';
       $this->message = $this->translate('MSC.krabo_login.set_password_success');
-      $this->nextStage = 'krabo.login.stage.login';
+      $this->nextStage = 'krabo.login.stage.logged_in';
     } else {
       $this->nextStage = 'krabo.login.stage.set_password';
-      $this->message = $this->translate('MSC.krabo_login.set_password_error');
+      $this->message = $this->objWidget->getErrorAsString();
+      $this->messageStatus = 'error';
     }
 
   }

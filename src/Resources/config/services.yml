@@ -11,10 +11,6 @@ services:
     class: Krabo\LoginWithCodeBundle\Module\LoginStage
     public: true
 
-  krabo.login.stage.password_reset:
-    class: Krabo\LoginWithCodeBundle\Module\PasswordResetStage
-    public: true
-
   krabo.login.stage.set_password:
     class: Krabo\LoginWithCodeBundle\Module\SetPasswordStage
     public: true

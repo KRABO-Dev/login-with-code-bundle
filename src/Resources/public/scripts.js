@@ -1,10 +1,7 @@
-const KraboLoginWithCodeUpdateInputConfig = (element, disabledStatus) => {
-    element.disabled = disabledStatus;
-    if (!disabledStatus) {
-        element.focus();
-    } else {
-        element.blur();
-    }
+const KraboLoginWithCodeFocus = (form) => {
+    var input = document.querySelectorAll(".code");
+    index = form.dataset.krabotoken.length;
+    input[index].focus();
 };
 
 //Start
@@ -20,7 +17,7 @@ const KraboLoginWithCodeInitCodeInputs = (form) => {
         element.value = "";
     });
     if (inputField) {
-        KraboLoginWithCodeUpdateInputConfig(inputField.firstElementChild, false);
+        KraboLoginWithCodeFocus(form);
     }
     input.forEach((element) => {
         inputFieldCount++;
@@ -29,23 +26,23 @@ const KraboLoginWithCodeInitCodeInputs = (form) => {
             let { value } = e.target;
 
             if (value.length == 1) {
-                KraboLoginWithCodeUpdateInputConfig(e.target, true);
+                KraboLoginWithCodeFocus(form);
                 if (inputCount <= (inputFieldCount -1) && e.key != "Backspace") {
                     form.dataset.krabotoken += value;
                     if (inputCount < (inputFieldCount -1)) {
-                        KraboLoginWithCodeUpdateInputConfig(e.target.nextElementSibling, false);
+                        KraboLoginWithCodeFocus(form);
                     }
                 }
                 inputCount += 1;
             } else if (value.length == 0 && e.key == "Backspace") {
                 form.dataset.krabotoken = form.dataset.krabotoken.substring(0, form.dataset.krabotoken.length - 1);
                 if (inputCount == 0) {
-                    KraboLoginWithCodeUpdateInputConfig(e.target, false);
+                    KraboLoginWithCodeFocus(form);
                     return false;
                 }
-                KraboLoginWithCodeUpdateInputConfig(e.target, true);
+                KraboLoginWithCodeFocus(form);
                 e.target.previousElementSibling.value = "";
-                KraboLoginWithCodeUpdateInputConfig(e.target.previousElementSibling, false);
+                KraboLoginWithCodeFocus(form);
                 inputCount -= 1;
             } else if (value.length > 1) {
                 e.target.value = value.split("")[0];
@@ -59,7 +56,7 @@ const KraboLoginWithCodeInitCodeInputs = (form) => {
                 submitButton.classList.add("show");
                 if (e.key == "Backspace") {
                     form.dataset.krabotoken = form.dataset.krabotoken.substring(0, form.dataset.krabotoken.length - 1);
-                    KraboLoginWithCodeUpdateInputConfig(inputField.lastElementChild, false);
+                    KraboLoginWithCodeFocus(form);
                     inputField.lastElementChild.value = "";
                     inputCount -= 1;
                     submitButton.classList.add("hide");

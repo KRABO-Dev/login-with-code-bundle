@@ -25,6 +25,7 @@ use Contao\StringUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Validator;
 
 class AskForEmailStage extends AbstractStage {
 
@@ -32,6 +33,10 @@ class AskForEmailStage extends AbstractStage {
 
   public function __construct(AuthenticationUtils $authenticationUtils) {
     $this->authenticationUtils = $authenticationUtils;
+  }
+
+  public function getBreadCrumbTitle(): string {
+    return $this->translate('MSC.krabo_login.email_breadcrumb');
   }
 
   public function getHeadline(): string {
@@ -51,11 +56,17 @@ class AskForEmailStage extends AbstractStage {
 
   public function process(Request $request, ModuleModel $module) {
     $request->getSession()->set(Security::LAST_USERNAME, $request->request->get('email'));
-    $member = MemberModel::findByEmail($request->request->get('email'));
-    if (null === $member) {
-      $this->nextStage = 'krabo.login.stage.register';
+    $email = $request->request->get('email');
+    if (!Validator::isEmail($email)) {
+      $this->message = $this->translate('MSC.krabo_login.invalid_email');
+      $this->messageStatus = 'error';
     } else {
-      $this->nextStage = 'krabo.login.stage.login';
+      $member = MemberModel::findByEmail($request->request->get('email'));
+      if (null === $member) {
+        $this->nextStage = 'krabo.login.stage.register';
+      } else {
+        $this->nextStage = 'krabo.login.stage.login';
+      }
     }
   }
 

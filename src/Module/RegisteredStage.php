@@ -30,12 +30,22 @@ class RegisteredStage extends AbstractStage {
     $this->tokenChecker = $tokenChecker;
   }
 
+  public function getBreadCrumbTitle(): string {
+    return $this->translate('MSC.krabo_login.registered_breadcrumb');
+  }
+
   public function getHeadline(): string {
     return $this->translate('MSC.krabo_login.registered_headline');
   }
 
   public function getDescription(): string {
     return sprintf($this->translate('MSC.krabo_login.registered_description'), $this->tokenChecker->getFrontendUsername());
+  }
+
+  public function getBreadCrumb(): array {
+    return [
+      'krabo.login.stage.ask_for_email',
+    ];
   }
 
   public function getForm(Request $request, ModuleModel $module): string {

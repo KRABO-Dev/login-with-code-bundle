@@ -30,6 +30,10 @@ class LoggedInStage extends AbstractStage {
     $this->tokenChecker = $tokenChecker;
   }
 
+    public function getBreadCrumbTitle(): string {
+    return $this->translate('MSC.krabo_login.logged_in_breadcrumb');
+  }
+
   public function getHeadline(): string {
     return $this->translate('MSC.krabo_login.logged_in_headline');
   }

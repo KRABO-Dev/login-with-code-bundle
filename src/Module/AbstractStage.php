@@ -41,6 +41,8 @@ abstract class AbstractStage extends System{
 
   protected bool $goToNext = false;
 
+  abstract public function getBreadCrumbTitle(): string;
+
   abstract public function getHeadline(): string;
 
   abstract public function getDescription(): string;
@@ -48,6 +50,10 @@ abstract class AbstractStage extends System{
   abstract public function getForm(Request $request, ModuleModel $module): string;
 
   abstract public function process(Request $request, ModuleModel $module);
+
+  public function getBreadCrumb(): array {
+    return [];
+  }
 
   public function getNextStage(): string {
     return $this->nextStage ?? 'krabo.login.stage.ask_for_email';
