@@ -1,3 +1,5 @@
+var KraboLoginCodeForm
+
 const KraboLoginWithCodeFocus = (form) => {
     var input = document.querySelectorAll(".code");
     index = form.dataset.krabotoken.length;
@@ -78,6 +80,11 @@ function KraboLoginWithCodeSubmitFunction(func) {
     if (document.getElementById('ctrl_password_confirm')) {
         document.getElementById('ctrl_password_confirm').required = false;
     }
+    if (document.querySelectorAll("[required]", KraboLoginCodeForm).length) {
+        document.querySelectorAll("[required]", KraboLoginCodeForm).forEach((element) => {
+            element.required = false;
+        });
+    }
     document.getElementById('function').value = func;
     document.getElementById('KraboLoginAjaxSubmitButton').click();
     return false;
@@ -104,6 +111,7 @@ function KraboLoginWithCodeRequest(form, body, callback) {
 }
 
 function KraboLoginWithCodeInitForm(form) {
+    KraboLoginCodeForm = form;
     form.addEventListener('submit', e => {
         e.preventDefault();
         const formData = new FormData(form);
