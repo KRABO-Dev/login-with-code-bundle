@@ -112,6 +112,17 @@ function KraboLoginWithCodeRequest(form, body, callback) {
 
 function KraboLoginWithCodeInitForm(form) {
     KraboLoginCodeForm = form;
+    var timerId;
+    if (timerId) {
+        clearTimeout(timerId);
+    } 
+    timerId = setTimeout(() => {
+        document.querySelectorAll("a.timer-inactive", form).forEach((element) => {
+            element.disabled = false;
+            element.classList.remove('timer-inactive');
+            element.classList.add('enabled');
+        });
+    }, 30000);
     form.addEventListener('submit', e => {
         e.preventDefault();
         const formData = new FormData(form);

@@ -31,7 +31,7 @@ $GLOBALS['TL_LANG']['MSC']['krabo_login']['logged_in_description'] = 'Logged in 
 
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['registered_breadcrumb'] = 'Registered.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['registered_headline'] = 'Registered.';
-$GLOBALS['TL_LANG']['MSC']['krabo_login']['registered_description'] = 'We have sent you an e-mail to activate your account.';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['registered_description'] = 'We have sent you an e-mail, to %s, to activate your account.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['password_reset_description'] = 'We have sent you an email to reset your password.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['set_password_breadcrumb'] = 'Set a new password';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['set_password_headline'] = 'Set a new password';
@@ -46,6 +46,7 @@ $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_headline'] = 'Register';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_description'] = 'You are not a member of the club yet. We can arrange this.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_passwords_do_not_match'] = 'Passwords do not match.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_submit'] = 'Register';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['register_privacy_required'] = 'You need to agree to privacy statement';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['registration_error'] = 'Could not register your as a member.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_newsletter'] = 'I want to receive the newsletter';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['registration_success'] = 'Successfully created an account. Check your e-mail to activate your account.';
@@ -55,3 +56,7 @@ $GLOBALS['TL_LANG']['MSC']['krabo_login']['activate_headline'] = 'Activate your 
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['activate_description'] = '';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['activate_error'] = 'Could not activate your account.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['activate_success'] = 'Account activated. You can login now.';
+
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['not_active_breadcrumb'] = 'Activate your account.';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['not_active_headline'] = 'Activate your account.';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['not_active_description'] = 'You account is inactive. We have sent you an e-mail, to %s, to activate your account.';

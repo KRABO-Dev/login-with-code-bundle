@@ -19,6 +19,10 @@ services:
     class: Krabo\LoginWithCodeBundle\Module\PasswordlessLoginStage
     public: true
 
+  krabo.login.stage.not-active:
+    class: Krabo\LoginWithCodeBundle\Module\NotActiveStage
+    public: true  
+
   krabo.login.stage.register:
     class: Krabo\LoginWithCodeBundle\Module\RegisterStage
     public: true

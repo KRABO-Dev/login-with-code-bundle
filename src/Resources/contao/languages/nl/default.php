@@ -32,7 +32,7 @@ $GLOBALS['TL_LANG']['MSC']['krabo_login']['logged_in_description'] = 'Ingelogd a
 
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['registered_breadcrumb'] = 'Account aangemaakt.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['registered_headline'] = 'Account aangemaakt.';
-$GLOBALS['TL_LANG']['MSC']['krabo_login']['registered_description'] = 'Er is een e-mail verstuurd om je account te activeren.';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['registered_description'] = 'Er is een e-mail verstuurd naar %s om je account te activeren.';
 
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['password_reset_description'] = 'We hebben je een e-mail gestuurd om je wachtwoord opnieuw in te stellen.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['set_password_breadcrumb'] = 'Stel nieuw wachtwoord in';
@@ -48,6 +48,7 @@ $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_headline'] = 'Nieuw account 
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_description'] = 'We zien dat je nog geen lid bent van de club. Dit kan geregeld worden.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_passwords_do_not_match'] = 'Wachtwoorden komen niet overeen.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_newsletter'] = 'Ik wil de nieuwsbrief ontvangen';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['register_privacy_required'] = 'We zien dat je nog niet akkoord bent gegaan met de privacyverklaring.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['register_submit'] = 'Account aanmaken';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['registration_error'] = 'Het is niet gelukt om een account voor je aan te maken.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['registration_success'] = 'Er is een account voor je aangemaakt. Controleer je e-mail om je account te activeren.';
@@ -57,3 +58,7 @@ $GLOBALS['TL_LANG']['MSC']['krabo_login']['activate_headline'] = 'Bevestig je ac
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['activate_description'] = '';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['activate_error'] = 'Je account is niet geactiveerd.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['activate_success'] = 'Je account is geactiveerd. Je kunt nu inloggen.';
+
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['not_active_breadcrumb'] = 'Account activeren.';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['not_active_headline'] = 'Account activeren.';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['not_active_description'] = 'Je account is gedeactiveerd. Er is een e-mail naar %s verstuurd om je account te activeren.';

@@ -100,6 +100,7 @@ class RegisterStage extends AbstractStage {
     $loader = new DcaLoader('tl_member');
     $loader->load();
 
+    $doNotSubmit = false;
     $strFormId = 'tl_krabo_login_'.$module->id;
     // Define the form field
     $arrField = $GLOBALS['TL_DCA']['tl_member']['fields']['password'];
@@ -136,9 +137,9 @@ class RegisterStage extends AbstractStage {
         if ($field == 'privacy') {
           $arrData = [
             'label'                   => ['', ''],
-            'inputType'                    => 'checkbox',
+          'inputType'                 => 'checkbox',
             'options'                 => [1 => $GLOBALS['TL_LANG']['MSC']['krabo_login']['privacy'] . '&nbsp;<span class="mandatory">*</span>'],
-            'eval'                    => array('mandatory'=>true, 'tl_class'=>'w50 wizard', 'feEditable'=>true, 'feGroup'=>'personal'),
+            'eval'                    => array('tl_class'=>'w50 wizard', 'feEditable'=>true, 'feGroup'=>'personal'),
           ];
         } else {
           $arrData = $GLOBALS['TL_DCA']['tl_member']['fields'][$field] ?? array();
@@ -278,6 +279,10 @@ class RegisterStage extends AbstractStage {
 
         ++$i;
       }
+      if (Input::post('FORM_SUBMIT') == $strFormId && $validateSubmit && empty(Input::post('privacy'))) {
+        $this->message = $this->translate('MSC.krabo_login.register_privacy_required');
+        $doNotSubmit = true;
+      }
       $this->initialized = true;
       $this->doNotSubmit = $doNotSubmit;
       $this->hasUpload = $hasUpload;
@@ -310,7 +315,7 @@ class RegisterStage extends AbstractStage {
     $this->initializeWidgets($module);
     $this->objWidget->validate();
     $this->objWidgetConfirm->validate();
-    if (!$this->objWidget->hasErrors() && !$this->objWidgetConfirm->hasErrors()) {
+    if (!$this->doNotSubmit && !$this->objWidget->hasErrors() && !$this->objWidgetConfirm->hasErrors()) {
       $arrData = $this->arrUser;
       $arrData['username'] = $username;
       $arrData['email'] = $username;
@@ -320,7 +325,9 @@ class RegisterStage extends AbstractStage {
       $this->nextStage = 'krabo.login.stage.registered';
     } else {
       $this->nextStage = 'krabo.login.stage.register';
-      $this->message = $this->objWidget->getErrorAsString();
+      if ($this->objWidget->hasErrors()) {
+        $this->message = $this->objWidget->getErrorAsString();
+      }
     }
 
   }

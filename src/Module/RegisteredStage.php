@@ -18,16 +18,16 @@
 
 namespace Krabo\LoginWithCodeBundle\Module;
 
-use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Contao\ModuleModel;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class RegisteredStage extends AbstractStage {
 
-  private TokenChecker $tokenChecker;
+  private AuthenticationUtils $authenticationUtils;
 
-  public function __construct(TokenChecker $tokenChecker) {
-    $this->tokenChecker = $tokenChecker;
+  public function __construct(AuthenticationUtils $authenticationUtils) {
+    $this->authenticationUtils = $authenticationUtils;
   }
 
   public function getBreadCrumbTitle(): string {
@@ -39,7 +39,7 @@ class RegisteredStage extends AbstractStage {
   }
 
   public function getDescription(): string {
-    return sprintf($this->translate('MSC.krabo_login.registered_description'), $this->tokenChecker->getFrontendUsername());
+    return sprintf($this->translate('MSC.krabo_login.registered_description'), $this->authenticationUtils->getLastUsername());
   }
 
   public function getBreadCrumb(): array {

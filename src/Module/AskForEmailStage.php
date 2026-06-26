@@ -64,6 +64,8 @@ class AskForEmailStage extends AbstractStage {
       $member = MemberModel::findByEmail($request->request->get('email'));
       if (null === $member) {
         $this->nextStage = 'krabo.login.stage.register';
+      } elseif ($member->disable) {
+        $this->nextStage = 'krabo.login.stage.not-active';
       } else {
         $this->nextStage = 'krabo.login.stage.login';
       }
