@@ -24,15 +24,18 @@ use Contao\OptInModel;
 use Contao\PageModel;
 use Contao\System;
 use Contao\Versions;
+use Doctrine\DBAL\Connection;
 use Krabo\LoginWithCodeBundle\Service\LoginService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 
 class ActivateStage extends AbstractStage {
   private LoginService $loginService;
+  private Connection $connection;
 
-  public function __construct(LoginService $loginService) {
+  public function __construct(LoginService $loginService, Connection $connection) {
     $this->loginService = $loginService;
+    $this->connection = $connection;
   }
 
   public function getBreadCrumbTitle(): string {
@@ -79,6 +82,8 @@ class ActivateStage extends AbstractStage {
     $member->disable = '';
     $member->locked = 0; // see #8545
     $member->save();
+
+    $this->connection->executeQuery("UPDATE `tl_newsletter_recipients` SET active = '1' WHERE `email` = '" . $member->email . "'");
 
     System::getContainer()->get('contao.repository.remember_me')->deleteByUsername($member->username);
 
