@@ -159,4 +159,49 @@ function KraboLoginWithCodeInitForm(form) {
         });
     });
     KraboLoginWithCodeInitCodeInputs(form);
+    KraboLoginInitPasswordToggle();
+}
+
+function KraboLoginInitPasswordToggle() {
+
+    const passwordField = document.getElementById('password') ? document.getElementById('password') : document.getElementById('ctrl_password');
+    const passwordConfirmField = document.getElementById('ctrl_password_confirm');
+    const toggle = document.getElementById('togglePassword');
+    const icon = document.getElementById('toggleIcon');
+    const showBtn = document.getElementById('pwdShowBtn');
+    const hideBtn = document.getElementById('pwdHideBtn');
+
+    if (!passwordField || !toggle) return;
+
+    if (toggle.dataset.bound) return;
+    toggle.dataset.bound = "1";
+
+    function togglePassword() {
+
+        const isHidden = passwordField.type === 'password';
+
+        passwordField.type = isHidden ? 'text' : 'password';
+        if (passwordConfirmField) {
+            passwordConfirmField.type = isHidden ? 'text' : 'password'; 
+        }
+
+        if (isHidden) {
+            showBtn.style.display = 'none';
+            hideBtn.style.display = '';
+        } else {
+            showBtn.style.display = '';
+            hideBtn.style.display = 'none';
+        }
+    }
+
+    if (toggle) {
+        toggle.addEventListener('click', togglePassword);
+        toggle.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                togglePassword();
+            }
+        });
+    }
+
 }

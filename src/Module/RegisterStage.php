@@ -39,6 +39,7 @@ use Contao\System;
 use Contao\UploadableWidgetInterface;
 use Contao\Versions;
 use Contao\Widget;
+use PageModel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
@@ -87,11 +88,29 @@ class RegisterStage extends AbstractStage {
   }
 
   public function getForm(Request $request, ModuleModel $module): string {
+    $strFormId = 'tl_krabo_login_'.$module->id;
     $this->initializeWidgets($module, false);
     $template = new FrontendTemplate('register_stage');
     $template->email = StringUtil::specialchars($this->authenticationUtils->getLastUsername());
     $template->submitLabel = $this->translate('MSC.krabo_login.register_submit');
-    $template->fields = $this->objWidget->generateLabel() . $this->objWidget->generate() . $this->objWidgetConfirm->generateLabel() . $this->objWidgetConfirm->generate() . $this->fields;
+    $template->fields = $this->fields;
+    $template->passwordFields = $this->objWidget->generateLabel() . $this->objWidget->generate();
+    if (Input::post('FORM_SUBMIT') == $strFormId) {
+      $template->passwordFields = str_replace('value=""', 'value="'. Input::post('password') . '"', $template->passwordFields);
+    }
+    $template->passwordFields .= $this->objWidgetConfirm->generateLabel() . $this->objWidgetConfirm->generate();
+    if (Input::post('FORM_SUBMIT') == $strFormId) {
+      $template->passwordFields = str_replace('value=""', 'value="'. Input::post('password_confirm') . '"', $template->passwordFields);
+    }
+
+    $template->guestContinue = '';
+    if ($module->krabo_login_guest_jumpTo) {
+      $target = $module->getRelated('krabo_login_guest_jumpTo');
+      if ($target instanceof PageModel) {
+        $template->guestContinue = '<a href="' . $target->getAbsoluteUrl() . '" class="continue-as-guest">' . $this->translate('MSC.krabo_login.continue_as_guest') . '</a>';
+      }
+    }
+
     return $template->parse();
   }
 

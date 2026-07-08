@@ -18,6 +18,7 @@
 
 namespace Krabo\LoginWithCodeBundle\Module;
 
+use Contao\CoreBundle\Translation\Translator;
 use Contao\ModuleModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,6 +29,8 @@ use Contao\System;
 abstract class AbstractStage extends System{
 
   private ?TranslatorInterface $translator = null;
+
+  private string $translationKey = '';
 
   protected string $nextStage;
 
@@ -80,9 +83,21 @@ abstract class AbstractStage extends System{
     return $this->goToNext;
   }
 
+  public function setTranslationKey(string $translationKey = '') {
+    $this->translationKey = $translationKey;
+  }
+
   protected function translate(string $key): string
   {
-    return $this->getTranslatior()->trans($key, [], 'contao_default');
+    $translator = $this->getTranslatior();
+    if (strlen($this->translationKey) && $translator instanceof Translator) {
+      $catalogue = $translator->getCatalogue();
+      $newKey = str_replace('.krabo_login.', '.' . $this->translationKey . '.', $key);
+      if ($catalogue->has($newKey, 'contao_default')) {
+        return $translator->trans($newKey, [], 'contao_default');
+      }
+    }
+    return $translator->trans($key, [], 'contao_default');
   }
 
   private function getTranslatior(): TranslatorInterface {

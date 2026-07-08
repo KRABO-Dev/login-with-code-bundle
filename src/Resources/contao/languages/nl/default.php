@@ -13,6 +13,9 @@ $GLOBALS['TL_LANG']['MSC']['krabo_login']['request_code_label'] = 'Inloggen zond
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['email'] = 'Je e-mailadres';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['submit_email'] = 'Verder';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['password'] = 'Je wachtwoord';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['showPassword'] = 'Wachtwoord tonen';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['hidePassword'] = 'Wachtwoord verbergen';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['continue_as_guest'] = 'Ga door als gast';
 
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['change'] = 'Wijzig';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['code'] = 'Je eenmalige code';

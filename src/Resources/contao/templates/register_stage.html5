@@ -3,8 +3,14 @@
   <input type="text" name="email" id="email" class="text" value="<?= $this->email ?>" disabled><br>
 </div>
 <div class="fields">
+  <?= $this->passwordFields ?>
+  <div id="togglePassword" class="show-password" tabindex="0" role="button">
+		<p id="pwdShowBtn"><img id="toggleIcon" src="/bundles/loginwithcode/toon-wachtwoord.svg"> <?= $this->trans('MSC.krabo_login.showPassword') ?></p>
+    <p id="pwdHideBtn" style="display: none;"><img id="toggleIcon" src="/bundles/loginwithcode/verberg-wachtwoord.svg"><?= $this->trans('MSC.krabo_login.hidePassword') ?></p>
+	</div>
   <?= $this->fields ?>
 </div>
 <div class="widget widget-submit">
   <button type="submit" class="submit"><?= $this->submitLabel ?></button>
 </div>
+<?php if ($this->guestContinue != ''): ?><?= $this->guestContinue; ?><?php endif; ?>

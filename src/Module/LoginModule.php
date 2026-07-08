@@ -43,6 +43,7 @@ class LoginModule extends AbstractFrontendModuleController  {
   protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
   {
     $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/loginwithcode/scripts.js|static';
+    $GLOBALS['TL_CSS'][] = 'bundles/loginwithcode/style.css|static';
     System::loadLanguageFile('default');
     $currentStageName = 'krabo.login.stage.ask_for_email';
     if ($request->query->has('stage') && $request->query->has('token')) {
@@ -52,6 +53,7 @@ class LoginModule extends AbstractFrontendModuleController  {
       $currentStageName = 'krabo.login.stage.logged_in';
     }
     $currentStage = System::getContainer()->get($currentStageName);
+    $currentStage->setTranslationKey($model->krabo_login_trans_key);
 
     $isAjax = false;
     if ($this->isAjaxForm($request, $model->id)) {
@@ -60,6 +62,7 @@ class LoginModule extends AbstractFrontendModuleController  {
       if ($submittedStage) {
         $currentStageName = $submittedStage;
         $currentStage = System::getContainer()->get($currentStageName);
+        $currentStage->setTranslationKey($model->krabo_login_trans_key);
         $function = $request->request->get('function');
         if (str_starts_with($function, 'breadcrumb_')) {
           $breadcrumbIndex = substr($function, 11) -1;
@@ -77,6 +80,7 @@ class LoginModule extends AbstractFrontendModuleController  {
           $currentStageName = $currentStage->getNextStage();
         }
         $currentStage = System::getContainer()->get($currentStageName);
+        $currentStage->setTranslationKey($model->krabo_login_trans_key);
       }
     }
     $stageForm = $currentStage->getForm($request, $model);
@@ -89,6 +93,7 @@ class LoginModule extends AbstractFrontendModuleController  {
       $messageStatus = $currentStage->getMessageStatus();
       $currentStageName = $currentStage->getNextStage();
       $currentStage = System::getContainer()->get($currentStageName);
+      $currentStage->setTranslationKey($model->krabo_login_trans_key);
       $stageForm = $currentStage->getForm($request, $model);
     }
 
@@ -96,6 +101,7 @@ class LoginModule extends AbstractFrontendModuleController  {
     $breadcrumbCount = 1;
     foreach($currentStage->getBreadCrumb() as $breadcrumb) {
       $breadcrumbStage = System::getContainer()->get($breadcrumb);
+      $breadcrumbStage->setTranslationKey($model->krabo_login_trans_key);
       $breadcrumbs[] = [
         'is_current' => false,
         'step' => $breadcrumb,

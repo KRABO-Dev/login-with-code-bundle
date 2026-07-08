@@ -28,6 +28,9 @@ $GLOBALS['TL_LANG']['MSC']['krabo_login']['invalid_password'] = 'Invalid passwor
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['email_not_found'] = 'E-mail address not found.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['logged_in_headline'] = 'Logged in';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['logged_in_description'] = 'Logged in as %s';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['showPassword'] = 'Show password';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['hidePassword'] = 'Hide password';
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['continue_as_guest'] = 'Continue as guest';
 
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['registered_breadcrumb'] = 'Registered.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['registered_headline'] = 'Registered.';

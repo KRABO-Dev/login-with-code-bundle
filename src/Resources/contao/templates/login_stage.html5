@@ -4,7 +4,12 @@
 </div>
 <div class="widget widget-text">
   <label for="password"><?= $this->trans('MSC.krabo_login.password') ?></label> <a class="passwordReset" onclick="KraboLoginWithCodeSubmitFunction('password_reset');"><?= $this->trans('MSC.krabo_login.password_reset') ?></a>
-  <input type="password" name="password" id="password" class="text" required><br>
+  <input type="password" name="password" id="password" class="text" required>
+	<div id="togglePassword" class="show-password" tabindex="0" role="button">
+		<p id="pwdShowBtn"><img id="toggleIcon" src="/bundles/loginwithcode/toon-wachtwoord.svg"> <?= $this->trans('MSC.krabo_login.showPassword') ?></p>
+    <p id="pwdHideBtn" style="display: none;"><img id="toggleIcon" src="/bundles/loginwithcode/verberg-wachtwoord.svg"><?= $this->trans('MSC.krabo_login.hidePassword') ?></p>
+	</div>
+  <br />
 </div>
 <div class="widget widget-submit">
   <button type="submit" class="submit"><?= $this->submitLabel ?></button>

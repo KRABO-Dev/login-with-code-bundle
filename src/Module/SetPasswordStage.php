@@ -22,6 +22,7 @@ use Contao\FrontendTemplate;
 use Contao\MemberModel;
 use Contao\ModuleModel;
 use Contao\OptInModel;
+use Contao\Input;
 use Contao\System;
 use Contao\Versions;
 use Contao\Widget;
@@ -64,6 +65,7 @@ class SetPasswordStage extends AbstractStage {
   }
 
   public function getForm(Request $request, ModuleModel $module): string {
+    $strFormId = 'tl_krabo_login_'.$module->id;
     $token = $request->query->get('token');
     if (empty($token)) {
       $token = $request->request->get('token');
@@ -81,7 +83,15 @@ class SetPasswordStage extends AbstractStage {
     $template->submitLabel = $this->translate('MSC.krabo_login.set_password_submit');
 
     $template->token = $token;
-    $template->fields = $this->objWidget->generateLabel() . $this->objWidget->generate() . $this->objWidgetConfirm->generateLabel() . $this->objWidgetConfirm->generate();
+    $template->fields = $this->fields;
+    $template->passwordFields = $this->objWidget->generateLabel() . $this->objWidget->generate();
+    if (Input::post('FORM_SUBMIT') == $strFormId) {
+      $template->passwordFields = str_replace('value=""', 'value="'. Input::post('password') . '"', $template->passwordFields);
+    }
+    $template->passwordFields .= $this->objWidgetConfirm->generateLabel() . $this->objWidgetConfirm->generate();
+    if (Input::post('FORM_SUBMIT') == $strFormId) {
+      $template->passwordFields = str_replace('value=""', 'value="'. Input::post('password_confirm') . '"', $template->passwordFields);
+    }
 
     return $template->parse();
   }
