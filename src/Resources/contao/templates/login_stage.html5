@@ -17,3 +17,4 @@
 <div class="widget widget-submit">
   <a class="requestCode" onclick="KraboLoginWithCodeSubmitFunction('passwordless_login');"><?= $this->requestCodeLabel ?></a>
 </div>
+<?php if ($this->guestContinue != ''): ?><?= $this->guestContinue; ?><?php endif; ?>

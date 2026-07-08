@@ -66,6 +66,13 @@ class LoginStage extends AbstractStage {
     $template->email = StringUtil::specialchars($this->authenticationUtils->getLastUsername());
     $template->submitLabel = $this->translate('MSC.krabo_login.login_submit');
     $template->requestCodeLabel = $this->translate('MSC.krabo_login.request_code_label');
+    $template->guestContinue = '';
+    if ($module->krabo_login_guest_jumpTo) {
+      $target = $module->getRelated('krabo_login_guest_jumpTo');
+      if ($target instanceof PageModel) {
+        $template->guestContinue = '<a href="' . $target->getAbsoluteUrl() . '" class="continue-as-guest">' . $this->translate('MSC.krabo_login.continue_as_guest') . '</a>';
+      }
+    }
     return $template->parse();
   }
 
