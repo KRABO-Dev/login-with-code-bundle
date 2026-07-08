@@ -19,3 +19,4 @@ $GLOBALS['TL_LANG']['tl_module']['nc_password_reset_notification'] = ['Password 
 $GLOBALS['TL_LANG']['tl_module']['nc_passwordless_notification'] = ['Password Less Notification', ''];
 $GLOBALS['TL_LANG']['tl_module']['krabo_login_trans_key'] = ['Vertaalsleutel', 'Standaard leeg (krabo_login). Indien ingevuld dan is dit de alternatieve sleutel voor vertaalteksten.'];
 $GLOBALS['TL_LANG']['tl_module']['krabo_login_guest_jumpTo'] = ['Doorgaan als gast redirect', 'Laat leeg om de knop te verbergen.'];
+$GLOBALS['TL_LANG']['tl_module']['krabo_login_show_popup'] = ['Toon popup', 'Toon popup na inloggen en activatie'];

@@ -14,6 +14,7 @@ $GLOBALS['TL_LANG']['MSC']['krabo_login']['email'] = 'Your e-mail address';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['submit_email'] = 'Next';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['password'] = 'Your password';
 
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['logged_in'] = 'You are now logged in.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['change'] = 'Change';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['code'] = 'Your single use code';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['login_request_code_breadcrumb'] = 'Login without a password';

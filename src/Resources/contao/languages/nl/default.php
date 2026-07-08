@@ -17,6 +17,7 @@ $GLOBALS['TL_LANG']['MSC']['krabo_login']['showPassword'] = 'Wachtwoord tonen';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['hidePassword'] = 'Wachtwoord verbergen';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['continue_as_guest'] = 'Ga door als gast';
 
+$GLOBALS['TL_LANG']['MSC']['krabo_login']['logged_in'] = 'Je bent ingelogd.';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['change'] = 'Wijzig';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['code'] = 'Je eenmalige code';
 $GLOBALS['TL_LANG']['MSC']['krabo_login']['login_request_code_breadcrumb'] = 'Inloggen zonder wachtwoord';

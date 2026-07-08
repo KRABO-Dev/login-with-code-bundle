@@ -114,7 +114,7 @@ class ActivateStage extends AbstractStage {
     $this->response = $response;
     $this->messageStatus = 'success';
     $this->message = $this->translate('MSC.krabo_login.activate_success');
-    if (class_exists('Isotope\Message', true)) {
+    if ($module->krabo_login_show_popup && class_exists('Isotope\Message', true)) {
       \Isotope\Message::addConfirmation($this->translate('MSC.krabo_login.activate_success'));
     }
     return '';

@@ -132,6 +132,10 @@ class PasswordlessLoginStage extends AbstractStage {
       ->executeStatement();
     $this->nextStage = 'krabo.login.stage.logged_in';
     $this->response = $response;
+
+    if ($module->krabo_login_show_popup && class_exists('Isotope\Message', true)) {
+      \Isotope\Message::addConfirmation($this->translate('MSC.krabo_login.logged_in'));
+    }
   }
 
   private function sendCode(Request $request, $notificationId): void {
