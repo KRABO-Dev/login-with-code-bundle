@@ -193,6 +193,7 @@ class SetPasswordStage extends AbstractStage {
         }
       }
 
+      $target = $module->getRelated('jumpTo');
       $targetPath = $request->getBasePath() . $request->getPathInfo() . '?stage=krabo.login.stage.logged_in';
       $request->request->set('_target_path', base64_encode($targetPath));
       $response = $this->loginService->authenticatePasswordless($request, $member->username);

@@ -339,6 +339,9 @@ class RegisterStage extends AbstractStage {
       $arrData['username'] = $username;
       $arrData['email'] = $username;
       $arrData['password'] = $this->objWidget->value;
+      if ($module->krabo_login_reg_language) {
+        $arrData['language'] = $module->krabo_login_reg_language;
+      }
       $this->createNewUser($arrData, $module);
 
       $this->nextStage = 'krabo.login.stage.registered';
