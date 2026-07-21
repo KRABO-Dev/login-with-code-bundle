@@ -30,6 +30,7 @@ use DcaLoader;
 use Krabo\LoginWithCodeBundle\Service\LoginService;
 use PageModel;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 
@@ -210,6 +211,12 @@ class SetPasswordStage extends AbstractStage {
         \Isotope\Message::addConfirmation($this->translate('MSC.krabo_login.set_password_success'));
       }
       $this->nextStage = 'krabo.login.stage.logged_in';
+      if ($module->krabo_login_merged_cart_jumpTo && $this->loginService->needToMergeCart($member->id)) {
+        $target = $module->getRelated('krabo_login_merged_cart_jumpTo');
+        if ($target instanceof PageModel) {
+          $this->response = new RedirectResponse($target->getAbsoluteUrl());
+        }
+      }
     } else {
       $this->nextStage = 'krabo.login.stage.set_password';
       $this->message = $this->objWidget->getErrorAsString();

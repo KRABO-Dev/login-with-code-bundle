@@ -19,6 +19,12 @@
 namespace Krabo\LoginWithCodeBundle\Service;
 
 use Contao\FrontendUser;
+use Contao\Input;
+use Isotope\Isotope;
+use Isotope\Model\ProductCollection;
+use Isotope\Model\ProductCollection\Cart as ProductCollectionCart;
+use Isotope\Module\Cart;
+use PageModel;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -37,6 +43,12 @@ use Symfony\Component\Security\Http\SecurityEvents;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterface;
 
 class LoginService {
+
+  /**
+   * Name of the temporary cart cookie
+   * @var string
+   */
+  protected static $strCookie = 'ISOTOPE_TEMP_CART';
 
   private UserProviderInterface $userProvider;
   private UserCheckerInterface $userChecker;
@@ -58,6 +70,24 @@ class LoginService {
     $this->authenticationManager = $authenticationManager;
     $this->logger = $logger;
     $this->sessionStrategy = $sessionStrategy;
+  }
+
+  public function needToMergeCart(int $memberId) {
+    global $objPage;
+    /** @var PageModel|\stdClass $rootPage */
+    $rootPage = PageModel::findByPk($objPage->rootId);
+    $strHash = (string) Input::cookie(static::$strCookie);
+    if ($strHash !== '' && $memberId) {
+      $storeId    = (int) $rootPage->iso_store_id;
+      $objMemberCart = ProductCollectionCart::findOneBy(array('member=?', 'store_id=?'), array($memberId, $storeId));
+      if (null !== $objMemberCart) {
+        $objGuestCart = ProductCollection::findOneBy(array('uniqid=?', 'store_id=?'), array($strHash, $storeId));
+        if (null !== $objGuestCart && $objGuestCart->countItems() > 0 && $objMemberCart->countItems()) {
+          return TRUE;
+        }
+      }
+    }
+    return false;
   }
 
   public function authenticate(Request $request, string $username, string $password):? Response {

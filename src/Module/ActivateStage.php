@@ -27,6 +27,7 @@ use Contao\Versions;
 use Doctrine\DBAL\Connection;
 use Krabo\LoginWithCodeBundle\Service\LoginService;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Security;
 
 class ActivateStage extends AbstractStage {
@@ -121,6 +122,12 @@ class ActivateStage extends AbstractStage {
     $this->message = $this->translate('MSC.krabo_login.activate_success');
     if ($module->krabo_login_show_popup && class_exists('Isotope\Message', true)) {
       \Isotope\Message::addConfirmation($this->translate('MSC.krabo_login.activate_success'));
+    }
+    if ($module->krabo_login_merged_cart_jumpTo && $this->loginService->needToMergeCart($member->id)) {
+      $target = $module->getRelated('krabo_login_merged_cart_jumpTo');
+      if ($target instanceof PageModel) {
+        $this->response = new RedirectResponse($target->getAbsoluteUrl());
+      }
     }
     return '';
   }

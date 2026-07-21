@@ -30,6 +30,7 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class LoginStage extends AbstractStage {
 
@@ -118,6 +119,12 @@ class LoginStage extends AbstractStage {
     $this->response = $response;
     if ($module->krabo_login_show_popup && class_exists('Isotope\Message', true)) {
       \Isotope\Message::addConfirmation($this->translate('MSC.krabo_login.logged_in'));
+    }
+    if ($module->krabo_login_merged_cart_jumpTo && $this->loginService->needToMergeCart($member->id)) {
+      $target = $module->getRelated('krabo_login_merged_cart_jumpTo');
+      if ($target instanceof PageModel) {
+        $this->response = new RedirectResponse($target->getAbsoluteUrl());
+      }
     }
   }
 

@@ -26,6 +26,7 @@ use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Krabo\LoginWithCodeBundle\Service\LoginService;
 use NotificationCenter\Model\Notification;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -135,6 +136,12 @@ class PasswordlessLoginStage extends AbstractStage {
 
     if ($module->krabo_login_show_popup && class_exists('Isotope\Message', true)) {
       \Isotope\Message::addConfirmation($this->translate('MSC.krabo_login.logged_in'));
+    }
+    if ($module->krabo_login_merged_cart_jumpTo && $this->loginService->needToMergeCart($member->id)) {
+      $target = $module->getRelated('krabo_login_merged_cart_jumpTo');
+      if ($target instanceof PageModel) {
+        $this->response = new RedirectResponse($target->getAbsoluteUrl());
+      }
     }
   }
 

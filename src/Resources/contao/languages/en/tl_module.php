@@ -19,5 +19,6 @@ $GLOBALS['TL_LANG']['tl_module']['nc_password_reset_notification'] = ['Password 
 $GLOBALS['TL_LANG']['tl_module']['nc_passwordless_notification'] = ['Password Less Notification', ''];
 $GLOBALS['TL_LANG']['tl_module']['krabo_login_trans_key'] = ['Translation key', 'Default empty (krabo_login). When set it is the key for custom translatable texts.'];
 $GLOBALS['TL_LANG']['tl_module']['krabo_login_guest_jumpTo'] = ['Continue as guest redirect', 'Leave empty to hide that button.'];
+$GLOBALS['TL_LANG']['tl_module']['krabo_login_merged_cart_jumpTo'] = ['Merged Shopping Cart Jump To', 'Leave empty to disable'];
 $GLOBALS['TL_LANG']['tl_module']['krabo_login_show_popup'] = ['Show popup', 'Show popup after activation and login'];
 $GLOBALS['TL_LANG']['tl_module']['krabo_login_reg_language'] = ['Language of new users', ''];
